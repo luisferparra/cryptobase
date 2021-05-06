@@ -1,13 +1,17 @@
 <?php
+
 /**
  * Controlador que tendrá varias funciones.
  */
+
 namespace App\Http\Controllers\Misc;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
+
+use Illuminate\Support\Facades\DB;
 
 use App\Models\CoinsCurrentValues;
 use App\Http\Controllers\Data\DataManagementController;
@@ -20,8 +24,9 @@ class MiscController extends Controller
      * @param string $input
      * @return string
      */
-    public static function strNormalize($input) {
-        return str_replace([' ','-'],['','_'],$input);
+    public static function strNormalize($input)
+    {
+        return str_replace([' ', '-'], ['', '_'], $input);
     }
 
     /**
@@ -30,8 +35,9 @@ class MiscController extends Controller
      * @param float $input
      * @return float
      */
-    public static function number_format($input,$digits=4) {
-        return number_format($input,$digits);
+    public static function number_format($input, $digits = 4)
+    {
+        return number_format($input, $digits, '.', '');
     }
 
     /**
@@ -43,8 +49,9 @@ class MiscController extends Controller
      * @param mixed $columns
      * @return array
      */
-    public static function getLastCurrencyEntryForTable($slug,$number=20,$columns=['eur','eur_24h_change','created_at']) {
-        $dat = DataManagementController::getLastEntryNumber($slug,$number);
+    public static function getLastCurrencyEntryForTable($slug, $number = 20, $columns = ['eur', 'eur_24h_change', 'created_at'])
+    {
+        $dat = DataManagementController::getLastEntryNumber($slug, $number);
         $out = [];
         foreach ($dat as  $datum) {
             $item = [];
@@ -52,7 +59,7 @@ class MiscController extends Controller
                 $insert = $datum->$column;
                 if ($column != 'created_at') {
                     $insert = static::number_format($datum->$column);
-                } 
+                }
                 $item[$column] = $insert;
             }
             $out[] = $item;
@@ -68,16 +75,49 @@ class MiscController extends Controller
      * @param CoinsCurrentValues $coinCurrent
      * @return array
      */
-    public static function getCoinsActive() {
-        $dat = CoinsCurrentValues::select('coins.id as id','coins.name as name')
-        ->join('coins','coins_current_values.coin_id','=','coins.id')
-        ->where('coins.is_active',1)
-        ->orderBy('coins.name')
-        ->get();
-        $newCollection= $dat->mapWithKeys(function ($item) {
+    public static function getCoinsActive()
+    {
+        $dat = CoinsCurrentValues::select('coins.id as id', 'coins.name as name')
+            ->join('coins', 'coins_current_values.coin_id', '=', 'coins.id')
+            ->where('coins.is_active', 1)
+            ->orderBy('coins.name')
+            ->get();
+        $newCollection = $dat->mapWithKeys(function ($item) {
             return [$item['id'] => Str::ucfirst($item['name'])];
         });
-    
+
         return $newCollection->all();
+    }
+
+
+    /**
+     * Form Function. Returns a collection (or array if input var is true)
+     *
+     * @param boolean $returnAsArray
+     * @return mixed Array or Collection
+     */
+    public static function getUsersList($returnAsArray = false)
+    {
+        $dat = DB::table('admin_users')->select('id', 'name', 'username')->get();
+        if (!$returnAsArray){
+            return $dat;
+
+        }
+        $newCollection = $dat->mapWithKeys(function ($item) {
+            return [$item->id => $item->name . " (" . $item->username . ")"];
+        });
+        return $newCollection->all();
+    }
+
+
+    /**
+     * Grid Functions. receives an user_id and returns Users data
+     *
+     * @param integer $user_id
+     * @return void
+     */
+    public static function getUsersData($user_id) {
+        $dat = DB::table('admin_users')->select('id', 'name', 'username')->find($user_id);
+        return $dat->name. " (" . $dat->username . ")";
     }
 }

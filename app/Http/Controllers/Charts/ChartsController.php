@@ -67,7 +67,7 @@ class ChartsController extends Controller
         $data = DataManagementController::getLastEntryByHours($slug);
         $rows = [];
         foreach ($data as $datum) {
-            $rows['"'.$datum->created_at.'"'] = MiscController::number_format($datum->eur,2);
+            $rows['"'.$datum->created_at.'"'] = MiscController::number_format($datum->eur,4);
         }
         
         $colors = self::getColor(count($rows));

@@ -15,4 +15,8 @@ class CoinsCurrentValues extends Model
     public function coin() {
         return $this->belongsTo(Coins::class);
     }
+
+    public function wallet() {
+        return $this->hasMany(Wallets::class,'coin_id','coin_id');
+    }
 }

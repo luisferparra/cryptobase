@@ -4,4 +4,6 @@
  */
 return [
     'api_url'=>env('API_CRYPT_URL'),
+
+    'operations_type' => ['PURCHASE','SELL'],
 ];

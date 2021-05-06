@@ -20,6 +20,8 @@ use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Row;
 
+use Encore\Admin\Facades\Admin;
+
 use Carbon\Carbon;
 use App\Models\Coins;
 
@@ -30,7 +32,7 @@ class CoinsCurrentController extends AdminController
      *
      * @var string
      */
-    protected $title = 'CoinsCurrentValues';
+    protected $title = 'Coins Current Values';
 
     /**
      * Make a grid builder.
@@ -39,6 +41,8 @@ class CoinsCurrentController extends AdminController
      */
     protected function grid()
     {
+
+        
         $grid = new Grid(new CoinsCurrentValues());
 
         $grid->column('id', __('Id'))->hide();
@@ -55,10 +59,10 @@ class CoinsCurrentController extends AdminController
         $grid->column('last_updated_at', __('Last updated at'))->hide();
         $grid->column('created_at', __('Created at'))->display(function () {
             return $this->created_at->format('Y-m-d H:i:s');
-        })->filter('range', 'date')->sortable();
+        })->filter('range', 'date')->sortable()->hide();
         $grid->column('updated_at', __('Last Updated at'))->display(function () {
             return $this->updated_at->format('Y-m-d H:i:s');
-        })->filter('range', 'date')->sortable();
+        })->filter('range', 'date')->sortable()->hide();
         $grid->disableCreateButton();
         $grid->disableFilter();
         $grid->disableExport();
@@ -70,7 +74,7 @@ class CoinsCurrentController extends AdminController
             $actions->disableEdit();
             // $actions->disableView();
         });
-        $grid->model()->orderBy('eur_24h_change');
+        $grid->model()->orderBy('eur_24h_change','desc');
         return $grid;
     }
 
@@ -141,7 +145,7 @@ class CoinsCurrentController extends AdminController
             $column->append($show);
             $column->append($boxTableLastEntriesTop);
         });
-        $row->column(4, function (Column $column) use ($slug) {
+        $row->column(8, function (Column $column) use ($slug) {
             $column->append(ChartsController::testChart($slug));
             $column->append(Dashboard::environment());
         });
