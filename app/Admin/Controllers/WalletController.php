@@ -21,6 +21,8 @@ use App\Http\Controllers\Misc\MiscController;
 use App\Http\Controllers\TradingCompanies\TradingCompaniesController;
 use App\Http\Controllers\Coins\CoinsMiscController;
 
+use App\Admin\Actions\Post\WalletTransaction;
+
 
 use App\Models\WalletInvestments;
 
@@ -127,22 +129,14 @@ class WalletController extends AdminController
         $grid->actions(function ($actions) {
             $actions->disableDelete();
             $actions->disableEdit();
-            $actions->append('<a href=""><i class="fa fa-eye">ablabl</i></a>');
-            $actions->prepend('<a href=""><i class="fa fa-paper-plane">blibli</i></a>');
             //$actions->disableView();
-        //    $rowAction = RowAction::name('hola');
+
+            $actions->add(new WalletTransaction);
         
         });
-        $grid->add('mybutton','mybutton')->cell( function ($value, $row) {
 
-            //$my_custom_condition = $row->something == ....
-            //$my_custom_link = route('my.route',['id'=>$row->ID])
-            //if ($my_custom_condition)
-            //{
-             //   return $my_custom_link;
-            //}
-    
-    });
+        
+       
         
         
 
@@ -279,10 +273,12 @@ class WalletController extends AdminController
             $operationType = 'PURCHASE';
             $quantity = $form->model()->quantity;
             $value = $form->model()->value;
+            $tradingCompany = $form->model()->trading_company_id;
 
             $total_amount = $form->model()->value_original;
             $walletInvestment = new WalletInvestments();
             $walletInvestment->wallet_id = $walletId;
+            $walletInvestment->trading_company_id = $tradingCompany;
             $walletInvestment->operation_type = $operationType;
             $walletInvestment->quantity = $quantity;
             $walletInvestment->value = $value;

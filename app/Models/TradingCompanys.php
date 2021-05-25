@@ -15,4 +15,8 @@ class TradingCompanys extends Model
         return $this->hasMany(Wallets::class);
     }
 
+    public function wallet_investments() {
+        return $this->hasMany(WalletInvestments::class);
+    }
+
 }

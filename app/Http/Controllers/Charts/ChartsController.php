@@ -64,7 +64,7 @@ class ChartsController extends Controller
         
     }
     public static function testChart($slug) {
-        $data = DataManagementController::getLastEntryByHours($slug);
+        $data = DataManagementController::getLastEntryByHours($slug,8);
         $rows = [];
         foreach ($data as $datum) {
             $rows['"'.$datum->created_at.'"'] = MiscController::number_format($datum->eur,4);

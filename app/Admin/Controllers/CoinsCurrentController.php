@@ -145,7 +145,8 @@ class CoinsCurrentController extends AdminController
             $column->append($show);
             $column->append($boxTableLastEntriesTop);
         });
-        $row->column(8, function (Column $column) use ($slug) {
+        $row->column(4, function (Column $column) use ($slug) {
+            $column->append(ChartsController::testChart($slug));
             $column->append(ChartsController::testChart($slug));
             $column->append(Dashboard::environment());
         });
