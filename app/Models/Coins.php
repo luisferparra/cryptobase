@@ -18,4 +18,8 @@ class Coins extends Model
     public function currentvalue() {
         return $this->hasOne(CoinsCurrentValues::class);
     }
+
+    public function information() {
+        return $this->hasOne(CoinsInformation::class);
+    }
 }

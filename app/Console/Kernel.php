@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('cryptobase:coins:fillremotedata')->everyFiveMinutes()->withoutOverlapping();
+        $schedule->command('cryptobase:coins:fillcoininfo')->everyFiveMinutes()->withoutOverlapping();
+        
         $schedule->command('cryptobase:coins:filldata')->daily();
 
     }
