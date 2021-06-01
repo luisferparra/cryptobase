@@ -120,7 +120,7 @@ class CoinsFillDataInformationCommand extends Command
                // $resp = $dataHttp->json();
                 continue;
             }
-            $this->info($dataHttp);
+            //$this->info($dataHttp);
             $dataJson = $dataHttp->json();
             $description = $dataJson['description']['en'];
             $scores = [
