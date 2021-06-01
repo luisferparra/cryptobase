@@ -35,6 +35,40 @@ class CoinsFillDataInformationCommand extends Command
         parent::__construct();
     }
 
+    private function __insertEmptyInfo($id) {
+        $description = '';
+        $scores = [
+            'market_cap_rank' => 0,
+            'coingecko_rank'  => 0,
+            'coingecko_score'  => 0,
+            'developer_score'  => 0,
+            'community_score'  => 0,
+            'liquidity_score'  => 0,
+            'public_interest_score'  => 0
+
+        ];
+        $community = [
+            'community_data'  => [],
+            'public_interest_stats'  => []
+        ];
+        
+   
+        CoinsInformation::updateOrCreate(
+            [
+              'coin_id' => $id  
+            ],
+            [
+                
+                'description' => '',
+                'links' => json_encode([]),
+                'images' => json_encode([]),
+                'scores' => json_encode($scores),
+                'community' => json_encode($community)
+             ]
+            
+        );
+    }
+
     /**
      * Execute the console command.
      *
@@ -77,10 +111,14 @@ class CoinsFillDataInformationCommand extends Command
                 'sparkline' => 'false'
             ]);
             if ($dataHttp->failed()) {
-                $this->error('Error at communications');
-                $bar->finish();
+                $this->error('Error at communications. Inserted Empty\n');
+                
+                $bar->advance();
+                $this->info('\n');
 
-                return 1;
+                $this->__insertEmptyInfo($id);
+               // $resp = $dataHttp->json();
+                continue;
             }
             $this->info($dataHttp);
             $dataJson = $dataHttp->json();
